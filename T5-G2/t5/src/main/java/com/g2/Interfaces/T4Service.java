@@ -45,6 +45,11 @@ public class T4Service extends BaseService {
         // Inizializzazione del servizio base con RestTemplate e URL specificato
         super(restTemplate, BASE_URL);
 
+
+        registerAction("getAvailableRobots", new ServiceActionDefinition(
+                params -> {List<AvailableRobot> a = getAvailableRobots(); logger.info("blabbo");logger.info(a.toString()); return a;}
+        ));
+
         registerAction("getGames", new ServiceActionDefinition(
                 params -> getGames((int) params[0]),
                 Integer.class
@@ -96,6 +101,15 @@ public class T4Service extends BaseService {
         registerAction("GetRisultati", new ServiceActionDefinition(
                 params -> GetRisultati((String) params[0], (String) params[1], (String) params[2]),
                 String.class, String.class, String.class));
+    }
+
+    // usa /robots/all per ottenere tutti i robot disponibili
+    private List<AvailableRobot> getAvailableRobots() {
+        final String endpoint = "/robots/all";
+
+        List<AvailableRobot> a = callRestGET(endpoint, null, new ParameterizedTypeReference<List<AvailableRobot>>() {
+        });
+        return a;
     }
 
     // usa /games per ottenere una lista di giochi
