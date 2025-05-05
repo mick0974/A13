@@ -6,6 +6,9 @@ services:
     container_name: ui_gateway-nginx
     ports:
       - "80:80" # Mappa la porta per renderla accessibile al di fuori della rete, expose la rende visibile all'interno della rete
+      - "443:443"
+    environment:
+      - HOST_IP=${HOST_IP}
     networks:
       - global-network
 

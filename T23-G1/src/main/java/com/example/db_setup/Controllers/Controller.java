@@ -276,6 +276,16 @@ public class Controller {
 
         Cookie jwtTokenCookie = new Cookie("jwt", token);
         jwtTokenCookie.setMaxAge(3600);
+
+        /*
+         *
+         */
+        jwtTokenCookie.setSecure(true);
+        jwtTokenCookie.setPath("/");
+        jwtTokenCookie.setHttpOnly(false); // solo per test
+        response.setHeader("Set-Cookie",
+                "jwt=" + token + "; Max-Age=3600; Path=/; Secure; HttpOnly; SameSite=None");
+
         response.addCookie(jwtTokenCookie);
         System.out.println("Cookie aggiunto alla risposta (login)");
         System.out.println("token_received:"+token);

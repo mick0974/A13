@@ -86,6 +86,7 @@ for i in "${SELECTION[@]}"; do
             echo "Building ui_gateway"
             cd "$ROOT_DIR/ui_gateway"
             docker build -t mick0974/a13:ui-gateway .
+            export HOST_IP=$(hostname -I | awk '{print $1}')
             docker compose up -d
             cd "$ROOT_DIR"
             ;;
