@@ -1,30 +1,45 @@
-version: '3.1'
+name: t23
+
+volumes:
+  mysql_data_volume:
 
 services:
-  app:
-    build: .
-    expose:
-      - 8080
-    # ports:
-    #   - "8081:8080"
-    depends_on:
-      - db
-    environment:
-      DB_URL: jdbc:mysql://db:3306/STUDENTSREPO
-    networks:
-      - global-network
-
   db:
     image: mysql:latest
+    container_name: t23-mysql_db
     environment:
-      MYSQL_ROOT_PASSWORD: 'password'
-      MYSQL_DATABASE: STUDENTSREPO
-    ports:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./mysql_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data_volume:/var/lib/mysql
+    expose:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}" ]
+      interval: 30s
       timeout: 20s
-      retries: 10
+      retries: 5
+    networks:
+      - global-network
+    restart: always
+
+  app:
+    image: mick0974/a13:t23-g1
+    container_name: t23-controller
+    expose:
+      - 8082
+    depends_on:
+      db:
+        condition: service_healthy # parte solo se il db è attivo
+    environment:
+      DB_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}  # Usa il nome del DB definito nel .env
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      JWT_KEY_SECRET: ${JWT_KEY_SECRET}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
     networks:
       - global-network
   
