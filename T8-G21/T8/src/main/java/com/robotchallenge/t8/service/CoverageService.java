@@ -28,9 +28,9 @@ public class CoverageService {
     private static final Logger logger = LoggerFactory.getLogger(CoverageService.class);
 
     private static final String EVOSUITE_FOLDER = "evosuite";
-    private static final String EVOSUITE_JAR = EVOSUITE_FOLDER + File.separator + "evosuite-1.0.6.jar";
-    private static final String EVOSUITE_RUNTIME_JAR = EVOSUITE_FOLDER + File.separator + "evosuite-standalone-runtime-1.0.6.jar";
-    private static final String EVOSUITE_POM = EVOSUITE_FOLDER + File.separator + "pom2.xml";
+    private static final String EVOSUITE_JAR = "evosuite-1.0.6.jar";
+    private static final String EVOSUITE_RUNTIME_JAR = "evosuite-standalone-runtime-1.0.6.jar";
+    private static final String EVOSUITE_POM = "pom2.xml";
 
 
     public String calculateRobotCoverage(OpponentCoverageRequestDTO request, MultipartFile projectZip) throws IOException {
@@ -47,9 +47,9 @@ public class CoverageService {
 
         // Copio evosuite e pom
         try {
-            Files.copy(Paths.get(cwd, EVOSUITE_JAR), Paths.get(projectDir, EVOSUITE_JAR), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get(cwd, EVOSUITE_RUNTIME_JAR), Paths.get(projectDir, EVOSUITE_RUNTIME_JAR), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get(cwd, EVOSUITE_POM), Paths.get(projectDir, "pom.xml"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(cwd, EVOSUITE_FOLDER, EVOSUITE_JAR), Paths.get(projectDir, EVOSUITE_JAR), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(cwd, EVOSUITE_FOLDER, EVOSUITE_RUNTIME_JAR), Paths.get(projectDir, EVOSUITE_RUNTIME_JAR), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(cwd, EVOSUITE_FOLDER, EVOSUITE_POM), Paths.get(projectDir, "pom.xml"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException | NullPointerException e) {
             throw new RuntimeException("[calculateRobotCoverage] Errore durante la copia di evosuite/pom.xml: " + e);
         }
@@ -85,9 +85,9 @@ public class CoverageService {
             Files.createDirectories(Path.of(cwdTest));
             Files.write(Path.of(cwdSrc, classUTName + ".java"), classUTCode.getBytes(), StandardOpenOption.CREATE);
             Files.write(Path.of(cwdTest, testClassName + ".java"), testClassCode.getBytes(), StandardOpenOption.CREATE);
-            Files.copy(Paths.get(currentCWD, EVOSUITE_JAR), Paths.get(baseCwd, "evosuite-1.0.6.jar"), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get(currentCWD, EVOSUITE_RUNTIME_JAR), Paths.get(baseCwd, "evosuite-standalone-1.0.6.jar"), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get(currentCWD, EVOSUITE_POM), Paths.get(baseCwd, "pom.xml"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(currentCWD, EVOSUITE_FOLDER, EVOSUITE_JAR), Paths.get(baseCwd, "evosuite-1.0.6.jar"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(currentCWD, EVOSUITE_FOLDER, EVOSUITE_RUNTIME_JAR), Paths.get(baseCwd, "evosuite-standalone-1.0.6.jar"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(currentCWD, EVOSUITE_FOLDER, EVOSUITE_POM), Paths.get(baseCwd, "pom.xml"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             logger.error("[calculateStudentCoverage] Errore durante la copia nel file system locale del progetto utente (src|test|evosuite|pom.xml): ", e);
             throw new RuntimeException("[calculateStudentCoverage] Errore durante la copia nel file system locale del progetto utente (src|test|evosuite|pom.xml): " + e);
